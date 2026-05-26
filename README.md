@@ -1,6 +1,6 @@
 # MyPMOSBuddy - Backend
 
-Express REST API for your-app-name.
+Express REST API for MyPMOSBuddy.
 
 ## Prerequisites
 

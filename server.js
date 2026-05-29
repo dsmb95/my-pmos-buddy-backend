@@ -17,7 +17,6 @@ import flowRoutes from './routes/flowRoutes.js';
 import skinRoutes from './routes/skinRoutes.js';
 import medicationRoutes from './routes/medicationRoutes.js';
 import weightRoutes from './routes/weightRoutes.js';
-import skinRoutineRoutes from './routes/skinRoutineRoutes.js';
 
 dotenv.config();
 
@@ -63,7 +62,6 @@ app.use('/api/flow', ensureAuthentication, flowRoutes);
 app.use('/api/skin', ensureAuthentication, skinRoutes);
 app.use('/api/medication', ensureAuthentication, medicationRoutes);
 app.use('/api/weight', ensureAuthentication, weightRoutes);
-app.use('/api/skin-routine', ensureAuthentication, skinRoutineRoutes);
 
 // Test route
 app.get('/', (req, res,) => {

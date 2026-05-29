@@ -11,7 +11,7 @@ const skinData = new mongoose.Schema({
     skinNotes: String,
     photos: [
         {
-            url: { type: String, required: true}
+            url: { type: String}
         }
     ]
 });

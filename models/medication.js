@@ -6,9 +6,12 @@ const medicationData = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    medication: {type: String, required: true},
-    dosage: String,
-    frequency: String
+    medications: [{
+        name: { type: String, required: true },
+        dosage: String,
+        frequency: String
+    }]
+    
 });
 
 export default mongoose.model('Medication', medicationData);

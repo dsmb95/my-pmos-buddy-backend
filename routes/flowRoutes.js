@@ -2,7 +2,6 @@ import Flow from "../models/flow.js";
 import express from "express";
 
 const router = express.Router();
-const API_KEY = process.env.API_VERVE;
 
 
 /**
@@ -32,7 +31,7 @@ router.post("/", async (req, res) => {
       {
         method: "GET",
         headers: {
-          "X-API-Key": API_KEY,
+          "X-API-Key": process.env.API_VERVE,
           "Content-Type": "application/json",
         },
       },

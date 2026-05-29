@@ -53,8 +53,12 @@ passport.serializeUser(serializeUsers);
 passport.deserializeUser(deserializeUsers);
 passport.use(new LocalStrategy({ usernameField: 'email'},setUpLocalStrategy));
 
-app.use(cors());
 app.use(express.json());
+
+// Test route
+app.get('/', (req, res,) => {
+    res.json({message: 'Server is running.'});
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -62,11 +66,6 @@ app.use('/api/flow', ensureAuthentication, flowRoutes);
 app.use('/api/skin', ensureAuthentication, skinRoutes);
 app.use('/api/medication', ensureAuthentication, medicationRoutes);
 app.use('/api/weight', ensureAuthentication, weightRoutes);
-
-// Test route
-app.get('/', (req, res,) => {
-    res.json({message: 'Server is running.'});
-});
 
 // Database connection
 mongoose

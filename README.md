@@ -6,11 +6,12 @@ Express REST API for MyPMOSBuddy.
 
 - Node.js installed
 - MongoDB Atlas account and connection string
+- API Verve API Key (https://apiverve.com/)
 
 ## Setup
 
 1. Clone the repository
-   git clone https://github.com/YOUR_USERNAME/your-app-name-backend.git
+   git clone https://github.com/dsmb95/my-pmos-buddy-backend.git
 
 2. Install dependencies
    npm install
@@ -19,7 +20,7 @@ Express REST API for MyPMOSBuddy.
    PORT=5000
    MONGO_URI=<your_mongodb_connection_string>
    API_VERVE=<your_api_key_from_apiverve>
-   SESSION_SECRET=<your_created_session_secret>
+   SESSION_SECRET=<create_your_own>
 
 4. Start the server
    npm run dev

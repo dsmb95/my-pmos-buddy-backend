@@ -8,7 +8,7 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   try {
-    const medData = await Medication.find({
+    const medData = await Medication.findOne({
       userId: req.user._id,
     });
 
@@ -24,13 +24,28 @@ router.get('/', async (req, res) => {
  */
 router.post('/', async (req, res) => {
     try {
-        const { medication, dosage, frequency } = req.body;
-        const medData = await Medication.create({
-            userId: req.user._id,
-            medication: medication,
-            dosage: dosage,
-            frequency: frequency
-        });
+        const { name, dosage, frequency } = req.body;
+        
+        if (!name) {
+            return res.status(400).json({ message: "Medication name is required" });
+        }
+        
+        const medData = await Medication.findOneAndUpdate(
+            {userId: req.user._id},
+            {
+                $push: {
+                    medications: {
+                        name: name,
+                        dosage: dosage,
+                        frequency, frequency
+                    }
+                }
+            },
+            {
+                new: true,
+                upsert: true
+            }
+        )
 
         res.status(201).json(medData);
     } catch(err) {

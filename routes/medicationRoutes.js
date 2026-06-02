@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
                     medications: {
                         name: name,
                         dosage: dosage,
-                        frequency, frequency
+                        frequency: frequency
                     }
                 }
             },

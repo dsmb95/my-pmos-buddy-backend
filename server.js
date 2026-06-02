@@ -20,6 +20,14 @@ import weightRoutes from './routes/weightRoutes.js';
 
 dotenv.config();
 
+const requiredEnv = ['MONGO_URI', 'SESSION_SECRET'];
+const missingEnv = requiredEnv.filter((key) => !process.env[key]);
+
+if (missingEnv.length) {
+    console.error(`Missing required environment variable(s): ${missingEnv.join(', ')}`);
+    process.exit(1);
+}
+
 const app = express();
 
 app.use(cors({
@@ -68,11 +76,14 @@ app.use('/api/medication', ensureAuthentication, medicationRoutes);
 app.use('/api/weight', ensureAuthentication, weightRoutes);
 
 // Database connection
+const PORT = process.env.PORT || 5000;
 mongoose
     .connect(process.env.MONGO_URI)
-    .then(() => console.log('MongoDB connected'))
-    .catch((err) => console.error("MongoDB connection error: ", err));
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on ${PORT}.`))
-
+    .then(() => {
+        console.log('MongoDB connected');
+        app.listen(PORT, () => console.log(`Server running on ${PORT}.`));
+    })
+    .catch((err) => {
+        console.error("MongoDB connection error: ", err);
+        process.exit(1);
+    });

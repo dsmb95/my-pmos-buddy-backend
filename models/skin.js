@@ -6,12 +6,16 @@ const skinData = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    date: { type: Date, default: Date.now },
-    skinLog: [ String ],
-    skinNotes: String,
-    photos: [
+    skinData: [
         {
-            url: { type: String}
+            date: { type: Date, default: Date.now },
+            skinLog: [ String ],
+            skinNotes: String,
+            photos: [
+                {
+                    url: { type: String }
+                }
+            ]
         }
     ]
 });

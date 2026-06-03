@@ -26,11 +26,43 @@ router.post('/', async (req, res) => {
         const { photos, skinLog, skinNotes } = req.body;
         const skinData = await Skin.create({
             userId: req.user._id,
-            skinLog: skinLog,
-            skinNotes: skinNotes,
-            photos: photos
+            skinData: [
+                {
+                    skinLog: skinLog,
+                    skinNotes: skinNotes,
+                    photos: photos
+                }
+            ]
         });
         res.status(201).json(skinData);
+    } catch(err) {
+        res.status(500).send(err);
+    }
+});
+
+/**
+ * Updates the skinData property for each user.
+ */
+router.put('/', async (req, res) => {
+    try {
+        const { skinLog, skinNotes, photos } = req.body;
+        const addSkinData = await Skin.findOneAndUpdate(
+            { userId: req.user._id },
+            { 
+                $push: {
+                    skinData: {
+                        skinLog: skinLog,
+                        skinNotes: skinNotes,
+                        photos: photos
+                    }
+                }
+            },
+            {
+                new: true
+            }
+        )
+
+        res.status(200).json(addSkinData);
     } catch(err) {
         res.status(500).send(err);
     }
@@ -67,6 +99,6 @@ router.post('/routine', async(req, res) => {
     } catch(err) {
         res.status(500).send(err)
     }
-})
+});
 
 export default router;

@@ -6,9 +6,14 @@ const weightData = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    date: { type: Date, default: Date.now },
-    unit: String,
-    weight: Number
+    weightData: [
+        {
+            date: { type: Date, default: Date.now },
+            unit: String,
+            weight: Number
+        }
+    ]
+    
 });
 
 export default mongoose.model('Weight', weightData);

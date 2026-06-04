@@ -34,6 +34,10 @@ app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true
 }))
+
+// For testing local frontend and deployed backend.
+app.set("trust, proxy", 1);
+
 // Session set up
 app.use(
     session({

@@ -35,8 +35,8 @@ app.use(cors({
     credentials: true
 }))
 
-// For testing local frontend and deployed backend.
-app.set("trust, proxy", 1);
+// Trust Render's proxy so secure cookies work correctly in production.
+app.set("trust proxy", 1);
 
 // Session set up
 app.use(

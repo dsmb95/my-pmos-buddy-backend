@@ -63,7 +63,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 passport.serializeUser(serializeUsers);
 passport.deserializeUser(deserializeUsers);
-passport.use(new LocalStrategy({ usernameField: 'email'},setUpLocalStrategy));
+passport.use(new LocalStrategy({ usernameField: 'email'}, setUpLocalStrategy));
 
 app.use(express.json());
 

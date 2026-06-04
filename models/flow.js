@@ -6,29 +6,35 @@ const flowSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    lastPeriod: Date,
-    cycleLength: Number,
-    periodLength: Number,
-    symptoms: [
+    flowData: [
         {
             date: {type: Date, default: Date.now},
-            symptomList: [String],
-            additionalNotes: String
+            lastPeriod: Date,
+            cycleLength: Number,
+            periodLength: Number,
+            symptoms: [
+                {
+                    date: {type: Date, default: Date.now},
+                    symptomList: [String],
+                    additionalNotes: String
+                }
+            ],
+            periodDates: [
+                {
+                    date: Date,
+                    flowLevel: {
+                        type: String,
+                        enum: ["light", "medium", "heavy"]
+                    },
+                    notes: String
+                }
+            ],
+            apiPrediction: {
+                type: mongoose.Schema.Types.Mixed
+            }
         }
-    ],
-    periodDates: [
-        {
-            date: Date,
-            flowLevel: {
-                type: String,
-                enum: ["light", "medium", "heavy"]
-            },
-            notes: String
-        }
-    ],
-    apiPrediction: {
-        type: mongoose.Schema.Types.Mixed
-    }
+    ]
+    
 });
 
 export default mongoose.model('Flow', flowSchema);

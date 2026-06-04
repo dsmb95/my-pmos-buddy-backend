@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
  */
 router.post('/', async (req, res) => {
   try {
-    const { cycleLength, lastPeriod, periodLength, periodDay, flowLevel, periodNotes } = req.body;
+    const { cycleLength, lastPeriod, periodLength, periodDay, flowLevel, periodNotes, symptomList, additionalNotes } = req.body;
     const response = await fetch(
       `https://api.apiverve.com/v1/menstrualcycle?last_period=${lastPeriod}&cycle_length=${cycleLength}&period_length=${periodLength}&cycles=3`,
       {
@@ -41,17 +41,27 @@ router.post('/', async (req, res) => {
 
     const flowData = await Flow.create({
         userId: req.user._id,
-        lastPeriod: lastPeriod,
-        cycleLength: cycleLength,
-        periodLength: periodLength,
-        periodDates: [
+        flowData: [
           {
-            date: periodDay,
-            flowLevel: flowLevel,
-            notes: periodNotes
-          }
-        ],
-        apiPrediction: data
+            lastPeriod: lastPeriod,
+            cycleLength: cycleLength,
+            periodLength: periodLength,
+            symptoms: [
+              {
+                symptomList: symptomList,
+                additionalNotes: additionalNotes
+              }
+            ],
+            periodDates: [
+              {
+                date: periodDay,
+                flowLevel: flowLevel,
+                notes: periodNotes
+              }
+            ],
+            apiPrediction: data
+              }
+            ]
     })
 
     res.status(201).json(flowData);
@@ -68,7 +78,12 @@ router.put('/period', async (req, res) => {
     const { periodDay, flowLevel, periodNotes } = req.body;
 
     const updateFlow = await Flow.findOne({userId: req.user._id});
-    const { lastPeriod, cycleLength, periodLength } = updateFlow;
+
+    if (!updateFlow || !updateFlow.flowData.length) {
+      return res.status(404).json({ message: "Flow data not found." });
+    }
+
+    const { lastPeriod, cycleLength, periodLength } = updateFlow.flowData[0];
 
     const response = await fetch(
       `https://api.apiverve.com/v1/menstrualcycle?last_period=${lastPeriod}&cycle_length=${cycleLength}&period_length=${periodLength}&cycles=3`,
@@ -87,14 +102,14 @@ router.put('/period', async (req, res) => {
       { userId: req.user._id },
       {
         $push: {
-          periodDates: {
+          "flowData.0.periodDates": {
             date: periodDay,
             flowLevel: flowLevel,
             notes: periodNotes
-          },
-          $set: {
-            apiPrediction: data
           }
+        },
+        $set: {
+          "flowData.0.apiPrediction": data
         }
       },
       {
@@ -115,23 +130,16 @@ router.put('/new-cycle', async (req, res) => {
   try {
     const { latestPeriod, periodDay, flowLevel, periodNotes } = req.body;
 
-    const flow = await Flow.findOneAndUpdate(
-      {userId: req.user._id},
-      {
-        $set: {
-          lastPeriod: latestPeriod
-        }
-      },
-      {
-        new: true
-      }
-    );
+    const flow = await Flow.findOne({ userId: req.user._id });
 
-    const newCycle = await Flow.findOne({userId: req.user._id});
-    const { lastPeriod, cycleLength, periodLength } = newCycle;
+    if (!flow || !flow.flowData.length) {
+      return res.status(404).json({ message: "Flow data not found." });
+    }
+
+    const { cycleLength, periodLength } = flow.flowData[0];
 
     const response = await fetch(
-      `https://api.apiverve.com/v1/menstrualcycle?last_period=${lastPeriod}&cycle_length=${cycleLength}&period_length=${periodLength}&cycles=3`,
+      `https://api.apiverve.com/v1/menstrualcycle?last_period=${latestPeriod}&cycle_length=${cycleLength}&period_length=${periodLength}&cycles=3`,
       {
         method: "GET",
         headers: {
@@ -147,14 +155,15 @@ router.put('/new-cycle', async (req, res) => {
       { userId: req.user._id },
       {
         $push: {
-          periodDates: {
+          "flowData.0.periodDates": {
             date: periodDay,
             flowLevel: flowLevel,
             notes: periodNotes
           }
         },
         $set: {
-          apiPrediction: data
+          "flowData.0.lastPeriod": latestPeriod,
+          "flowData.0.apiPrediction": data
         }
       },
       {

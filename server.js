@@ -49,7 +49,7 @@ app.use(
             maxAge: 1000 * 60 * 60 * 24, 
             httpOnly: true,
             secure: false,
-            sameSite: 'lax'
+            sameSite: 'none'
         }
     })
 );

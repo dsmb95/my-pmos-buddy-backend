@@ -7,13 +7,19 @@ const router = express.Router();
 
 router.get("/", async(req, res) => {
   try {
-    const nameUser = await User.findOne({userId: req.user._id})
-
-    res.status(200).json(nameUser.name);
+    
+    if (!req.user) {
+      return res.status(400).json({message: "Not logged in"})
+    }
+    const nameUser = await User.findById(req.user._id)
+    if (!nameUser) {
+      return res.status(404).json({message: "User not found"})
+    }
+    res.status(200).json({name: nameUser.name});
   } catch(err) {
     res.status(500).send(err)
   }
-})
+});
 
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {

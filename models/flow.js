@@ -28,13 +28,8 @@ const flowSchema = new mongoose.Schema({
                 periodNotes: String
             }
         ],
-        apiPrediction: [
-            {
-                date: { type: Date, default: Date.now },
-                apiData: { type: mongoose.Schema.Types.Mixed }
-            }
-            
-        ]
+        apiPrediction: { type: mongoose.Schema.Types.Mixed }
+           
        
     }
     

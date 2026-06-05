@@ -68,11 +68,7 @@ router.post("/", async (req, res) => {
             periodNotes,
           },
         ],
-        apiPrediction: [
-          {
-            apiData: data,
-          },
-        ],
+        apiPrediction: data,
       },
     });
 
@@ -129,27 +125,29 @@ router.put("/", async (req, res) => {
         "flowData.lastPeriod": apiLastPeriod,
         "flowData.cycleLength": apiCycleLength,
         "flowData.periodLength": apiPeriodLength,
-      },
-      $push: {
-        "flowData.apiPrediction": {
-          apiData: apiData,
-        },
+        "flowData.apiPrediction": apiData,
       },
     };
 
     if (symptomList?.length || additionalNotes) {
-      update.$push["flowData.symptoms"] = {
-        symptomList: symptomList || [],
-        additionalNotes: additionalNotes || "",
+      update.$push = {
+        ...update.$push,
+        "flowData.symptoms": {
+          symptomList: symptomList || [],
+          additionalNotes: additionalNotes || "",
+        },
       };
     }
 
     if (periodDay) {
-      update.$push["flowData.periodDates"] = {
-        periodDay,
-        firstDay,
-        flowLevel,
-        periodNotes: periodNotes || "",
+      update.$push = {
+        ...update.$push,
+        "flowData.periodDates": {
+          periodDay,
+          firstDay,
+          flowLevel,
+          periodNotes: periodNotes || "",
+        },
       };
     }
 
@@ -166,6 +164,5 @@ router.put("/", async (req, res) => {
     res.status(500).send(err);
   }
 });
-
 
 export default router;

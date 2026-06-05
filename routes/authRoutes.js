@@ -5,6 +5,16 @@ import passport from "passport";
 
 const router = express.Router();
 
+router.get("/", async(req, res) => {
+  try {
+    const nameUser = await User.findOne({userId: req.user._id})
+
+    res.status(200).json(nameUser.name);
+  } catch(err) {
+    res.status(500).send(err)
+  }
+})
+
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {

@@ -13,6 +13,7 @@ const flowSchema = new mongoose.Schema({
         periodLength: Number,
         symptoms: [
             {
+                date: {type: Date, default: Date.now},
                 symptomList: [String],
                 additionalNotes: String
             }

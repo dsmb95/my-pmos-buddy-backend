@@ -20,7 +20,7 @@ const flowSchema = new mongoose.Schema({
         ],
         periodDates: [
             {
-                periodDay: Date,
+                periodDay: {type: Date, default: Date.now, required: true},
                 firstDay: Boolean,
                 flowLevel: {
                     type: String,

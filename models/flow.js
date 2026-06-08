@@ -9,8 +9,8 @@ const flowSchema = new mongoose.Schema({
     flowData: {
         date: {type: Date, default: Date.now},
         lastPeriod: Date,
-        cycleLength: Number,
-        periodLength: Number,
+        cycleLength: {type: Number, default: 28},
+        periodLength: {type: Number, default: 5},
         symptoms: [
             {
                 date: {type: Date, default: Date.now},
@@ -20,7 +20,7 @@ const flowSchema = new mongoose.Schema({
         ],
         periodDates: [
             {
-                periodDay: {type: Date, default: Date.now, required: true},
+                periodDay: Date,
                 firstDay: Boolean,
                 flowLevel: {
                     type: String,

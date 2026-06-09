@@ -84,7 +84,7 @@ router.get('/routine', async(req, res) => {
 });
 
 /**
- * 
+ * Creates a new document for the user's current skin care routine.
  */
 router.post('/routine', async(req, res) => {
     try {
@@ -96,6 +96,38 @@ router.post('/routine', async(req, res) => {
         });
 
         res.status(201).json(routine);
+    } catch(err) {
+        res.status(500).send(err)
+    }
+});
+
+/**
+ * Updates the user's skin care routine.
+ */
+router.put('/routine', async(req, res) => {
+    try {
+        const { am, pm } = req.body;
+
+        const updates = {};
+
+        if (am) {
+            updates.amProducts = am;
+        }
+
+        if (pm) {
+            updates.pmProducts = pm;
+        }
+        
+        const updatedRoutine = await Skin.findOneAndUpdate({userId: req.user._id},
+            {
+                $set: updates
+            },
+            {
+                new: true
+            }
+        );
+
+        res.status(200).json(updatedRoutine);
     } catch(err) {
         res.status(500).send(err)
     }

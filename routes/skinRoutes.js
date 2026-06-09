@@ -118,7 +118,7 @@ router.put('/routine', async(req, res) => {
             updates.pmProducts = pm;
         }
         
-        const updatedRoutine = await Skin.findOneAndUpdate({userId: req.user._id},
+        const updatedRoutine = await SkinRoutine.findOneAndUpdate({userId: req.user._id},
             {
                 $set: updates
             },

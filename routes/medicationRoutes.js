@@ -53,4 +53,35 @@ router.post('/', async (req, res) => {
     }
 });
 
+/**
+ * Deletes one medication from the user's medication list.
+ */
+router.delete('/:medicationId', async (req, res) => {
+    try {
+        const { medicationId } = req.params;
+
+        const medData = await Medication.findOneAndUpdate(
+            { userId: req.user._id },
+            {
+                $pull: {
+                    medications: {
+                        _id: medicationId
+                    }
+                }
+            },
+            {
+                new: true
+            }
+        );
+
+        if (!medData) {
+            return res.status(404).json({ message: "Medication list not found" });
+        }
+
+        res.status(200).json(medData);
+    } catch(err) {
+        res.status(500).send(err);
+    }
+});
+
 export default router;

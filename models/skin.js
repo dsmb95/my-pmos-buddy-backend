@@ -13,7 +13,8 @@ const skinData = new mongoose.Schema({
             skinNotes: String,
             photos: [
                 {
-                    url: { type: String }
+                    url: String,
+                    publicId: String
                 }
             ]
         }

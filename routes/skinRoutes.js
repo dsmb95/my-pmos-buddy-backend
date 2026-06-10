@@ -7,13 +7,33 @@ import { v2 as cloudinary } from "cloudinary";
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+function configureCloudinary() {
+  const requiredEnv = [
+    "CLOUDINARY_CLOUD_NAME",
+    "CLOUDINARY_API_KEY",
+    "CLOUDINARY_API_SECRET",
+  ];
+
+  const missingEnv = requiredEnv.filter((key) => !process.env[key]);
+
+  if (missingEnv.length) {
+    const error = new Error(
+      `Missing Cloudinary environment variable(s): ${missingEnv.join(", ")}`,
+    );
+    error.statusCode = 500;
+    throw error;
+  }
+
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+}
 
 function uploadToCloudinary(file) {
+  configureCloudinary();
+
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       { folder: "my-pmos-buddy/skin" },
@@ -24,6 +44,14 @@ function uploadToCloudinary(file) {
     );
 
     stream.end(file.buffer);
+  });
+}
+
+function sendSkinError(res, err) {
+  console.error("Skin route error:", err);
+
+  res.status(err.statusCode || 500).json({
+    message: err.message || "Unable to save skin data.",
   });
 }
 
@@ -73,7 +101,7 @@ router.post("/", upload.array("photos"), async (req, res) => {
     });
     res.status(201).json(skinData);
   } catch (err) {
-    res.status(500).send(err);
+    sendSkinError(res, err);
   }
 });
 
@@ -121,7 +149,7 @@ router.put("/", upload.array("photos"), async (req, res) => {
 
     res.status(200).json(addSkinData);
   } catch (err) {
-    res.status(500).send(err);
+    sendSkinError(res, err);
   }
 });
 

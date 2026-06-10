@@ -20,7 +20,13 @@ import weightRoutes from './routes/weightRoutes.js';
 
 dotenv.config();
 
-const requiredEnv = ['MONGO_URI', 'SESSION_SECRET'];
+const requiredEnv = [
+    'MONGO_URI',
+    'SESSION_SECRET',
+    'CLOUDINARY_CLOUD_NAME',
+    'CLOUDINARY_API_KEY',
+    'CLOUDINARY_API_SECRET'
+];
 const missingEnv = requiredEnv.filter((key) => !process.env[key]);
 
 if (missingEnv.length) {

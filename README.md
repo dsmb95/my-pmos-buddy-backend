@@ -32,8 +32,10 @@ Express REST API for MyPMOSBuddy.
 | POST | /api/auth/login | Logs the user in. |
 | GET | /api/auth/logout | Logs the user out. |
 | POST | /api/auth/register | Registers a new user. |
+| GET | /api/auth/ | Returns the user's name. |
 | GET | /api/flow| Returns the flow data unique to each user. |
 | POST | /api/flow | Creates a new document on the collection containing the user's cycle data. |
+| PUT | /api/flow | Updates the user's flow data. |
 | GET | /api/skin | Returns the skin data unique to each user. |
 | POST | /api/skin | Creates a new document on the collection containing the user's skin data. |
 | GET | /api/skin/routine | Returns the user's skin routine data. |

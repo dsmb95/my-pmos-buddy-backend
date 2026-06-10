@@ -79,7 +79,9 @@ router.post("/", async (req, res) => {
 });
 
 /**
- * Updates the flow data to add a new flow day to the calendar.
+ * Updates the flow data to update the flowData.
+ * Updates the last period, cycle lenght, and period length to dynamically fetch the Menstrual Cycle API from Verve to show the user's future cycles.
+ * Updates the user's symptoms and period data.
  */
 router.put("/", async (req, res) => {
   try {

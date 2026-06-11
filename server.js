@@ -17,6 +17,7 @@ import flowRoutes from './routes/flowRoutes.js';
 import skinRoutes from './routes/skinRoutes.js';
 import medicationRoutes from './routes/medicationRoutes.js';
 import weightRoutes from './routes/weightRoutes.js';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
@@ -88,9 +89,15 @@ mongoose
     .connect(process.env.MONGO_URI)
     .then(() => {
         console.log('MongoDB connected');
-        app.listen(PORT, () => console.log(`Server running on ${PORT}.`));
+        
+        // Only start the server if this file is run directly
+        if (process.argv[1] === fileURLToPath(import.meta.url)) {
+            app.listen(PORT, () => console.log(`Server running on ${PORT}.`));
+        }
     })
     .catch((err) => {
         console.error("MongoDB connection error: ", err);
         process.exit(1);
     });
+
+export default app;

@@ -62,7 +62,12 @@ router.get("/logout", (req, res, next) => {
     if (err) return next(err);
     req.session.destroy((err) => {
       if (err) return next(err);
-      res.clearCookie("connect.sid");
+      const isProduction = process.env.NODE_ENV === "production";
+      res.clearCookie("connect.sid", {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+      });
       res.status(200).json({
         message: "You have logged out successfully",
         redirectTo: "/login",

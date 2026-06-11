@@ -25,6 +25,11 @@ const requiredEnv = [
     'MONGO_URI',
     'SESSION_SECRET'
 ];
+
+if (process.env.NODE_ENV === 'production') {
+    requiredEnv.push('FRONTEND_URL');
+}
+
 const missingEnv = requiredEnv.filter((key) => !process.env[key]);
 
 if (missingEnv.length) {
@@ -34,8 +39,23 @@ if (missingEnv.length) {
 
 const app = express();
 
+const normalizeOrigin = (origin) => origin?.trim().replace(/\/+$/, '');
+
+const allowedOrigins = [
+    'http://localhost:5173',
+    normalizeOrigin(process.env.FRONTEND_URL),
+].filter(Boolean);
+
+const isProduction = process.env.NODE_ENV === 'production';
+const sessionCookieOptions = {
+    maxAge: 1000 * 60 * 60 * 24,
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax'
+};
+
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: allowedOrigins,
     credentials: true
 }))
 
@@ -53,12 +73,7 @@ app.use(
             collectionName: 'sessions',
             ttl: 14 * 24 * 60 * 60
         }),
-        cookie: {
-            maxAge: 1000 * 60 * 60 * 24, 
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none'
-        }
+        cookie: sessionCookieOptions
     })
 );
 

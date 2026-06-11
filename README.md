@@ -22,6 +22,8 @@ Express REST API for MyPMOSBuddy.
    MONGO_URI=<your_mongodb_connection_string>
    API_VERVE=<your_api_key_from_apiverve>
    SESSION_SECRET=<create_your_own>
+   FRONTEND_URL=<your_deployed_frontend_url_without_trailing_slash>
+   NODE_ENV=production
    CLOUDINARY_CLOUD_NAME=<your_cloud_name_from_cloudinary>
    CLOUDINARY_API_KEY=<your_API_key_from_cloudinary>
    CLOUDINARY_API_SECRET=<your_API_secret_from_cloudinary>

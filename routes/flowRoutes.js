@@ -167,4 +167,54 @@ router.put("/", async (req, res) => {
   }
 });
 
+/**
+ * Delete logged symptoms
+ */
+router.delete('/symptoms/:symptomId', async(req, res) => {
+  try {
+    const updatedFlowData = await Flow.findOneAndUpdate(
+      {userId: req.user._id},
+      {
+        $pull: {
+          "flowData.symptoms": {_id: req.params.symptomId}
+        }
+      },
+      {new: true}
+    );
+
+    if (!updatedFlowData) {
+      return res.status(404).json({message: "Flow data not found."});
+    }
+
+    res.status(200).json(updatedFlowData);
+  } catch(err) {
+    res.status(500).send(err)
+  }
+});
+
+/**
+ * Delete logged period
+ */
+router.delete('/periods/:periodId', async(req, res) => {
+  try {
+    const updatedFlowData = await Flow.findOneAndUpdate(
+      {userId: req.user._id},
+      {
+        $pull: {
+          "flowData.periodDates": {_id: req.params.periodId}
+        }
+      },
+      {new: true}
+    );
+
+    if (!updatedFlowData) {
+      return res.status(404).json({message: "Flow data not found."});
+    }
+
+    res.status(200).json(updatedFlowData)
+  } catch(err) {
+    res.status(500).send(err)
+  }
+});
+
 export default router;

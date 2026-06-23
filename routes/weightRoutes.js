@@ -57,4 +57,25 @@ router.put('/', async (req, res) => {
 
 });
 
+router.delete('/:weightId', async(req, res) => {
+    try {
+        const weightData = await Weight.findOneAndUpdate(
+            {userId: req.user._id},
+            {
+                $pull: {
+                    weightData: {_id: req.params.weightId}
+                }
+            },
+            {new: true}
+        );
+
+        if (!weightData) {
+            return res.status(404).json({message: "Weight data not found."})
+        }
+
+        res.status(200).json(weightData);
+    } catch(err) {
+        res.status(500).send(err)
+    }
+});
 export default router;

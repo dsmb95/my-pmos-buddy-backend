@@ -47,6 +47,11 @@ function uploadToCloudinary(file) {
   });
 }
 
+async function deleteFromCloudinary(publicId) {
+  configureCloudinary();
+  return cloudinary.uploader.destroy(publicId);
+}
+
 function sendSkinError(res, err) {
   console.error("Skin route error:", err);
 
@@ -148,6 +153,51 @@ router.put("/", upload.array("photos"), async (req, res) => {
     }
 
     res.status(200).json(addSkinData);
+  } catch (err) {
+    sendSkinError(res, err);
+  }
+});
+
+/**
+ * Deletes one skin log and its uploaded Cloudinary photos.
+ */
+router.delete("/logs/:skinDataId", async (req, res) => {
+  try {
+    const skin = await Skin.findOne({ userId: req.user._id });
+
+    if (!skin) {
+      return res.status(404).json({
+        message: "Skin data not found.",
+      });
+    }
+
+    const skinLog = skin.skinData.id(req.params.skinDataId);
+
+    if (!skinLog) {
+      return res.status(404).json({
+        message: "Skin log not found.",
+      });
+    }
+
+    const publicIds = skinLog.photos
+      .map((photo) => photo.publicId)
+      .filter(Boolean);
+
+    await Promise.all(
+      publicIds.map((publicId) => deleteFromCloudinary(publicId)),
+    );
+
+    const updatedSkinData = await Skin.findOneAndUpdate(
+      { userId: req.user._id },
+      {
+        $pull: {
+          skinData: { _id: req.params.skinDataId },
+        },
+      },
+      { new: true },
+    );
+
+    res.status(200).json(updatedSkinData);
   } catch (err) {
     sendSkinError(res, err);
   }
